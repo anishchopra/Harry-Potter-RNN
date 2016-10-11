@@ -27,6 +27,7 @@ output_text = ""
 for _ in range(num_chars):
 	seed_value = seed_value.reshape((1, window_size, len(chars)))
 
+	# Generate a prediction on the seed value
 	prediction = model.predict(seed_value)[0]
 	index = np.argmax(prediction)
 	predicted_char = indices_char[index]
@@ -34,9 +35,9 @@ for _ in range(num_chars):
 
 	seed_value = seed_value.reshape((window_size, len(chars)))
 
+	# Add the predicted character to the seed and slide the window over
 	new_value = np.zeros((1,len(chars)))
 	new_value[0][index] = 1
-
 	seed_value = np.append(seed_value[1:], new_value)
 
 print output_text
