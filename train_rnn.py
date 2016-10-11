@@ -6,18 +6,7 @@ import numpy as np
 import random
 import sys
 
-source_file = 'Harry Potter and the Goblet of Fire.txt'
-window_size = 20
-batch_size = 1
-model_file = 'harry_potter_rnn.h5'
-
-with open(source_file, 'r') as f:
-    text = f.read()
-
-chars = sorted(list(set(text)))
-
-char_indices = dict((c, i) for i, c in enumerate(chars))
-indices_char = dict((i, c) for i, c in enumerate(chars))
+from constants import *
 
 phrases = []
 next_chars = []
@@ -40,7 +29,9 @@ for i,phrase in enumerate(phrases):
 print "Finished creating training data"
 print "Building model..."
 
+# build model
 model = Sequential()
+# by setting stateful=True, the state of the layer will preserved between batches
 model.add(LSTM(128, batch_input_shape=(batch_size, window_size, len(chars)), stateful=True))
 model.add(Dense(len(chars)))
 model.add(Activation('softmax'))
