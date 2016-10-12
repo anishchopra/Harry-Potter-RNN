@@ -17,14 +17,16 @@ for i in range(len(text) - window_size):
     next_chars.append(text[i+window_size])
 
 # create training data
-x = np.zeros((len(phrases), window_size, len(chars)), dtype='bool')
+x = np.zeros((len(phrases), window_size, 1), dtype='bool')
 y = np.zeros((len(phrases), len(chars)), dtype='bool')
 
 for i,phrase in enumerate(phrases):
     for j,char in enumerate(phrase):
-        x[i,j,char_indices[char]] = 1
+        x[i,j,0] = char_indices[char]
 
     y[i,char_indices[next_chars[i]]] = 1
+
+x = x / float(len(chars))
 
 print "Finished creating training data"
 print "Building model..."
@@ -32,11 +34,11 @@ print "Building model..."
 # build model
 model = Sequential()
 # by setting stateful=True, the state of the layer will preserved between batches
-model.add(LSTM(128, batch_input_shape=(batch_size, window_size, len(chars)), stateful=True))
+model.add(LSTM(128, input_shape=(window_size, 1), stateful=False))
 model.add(Dense(len(chars)))
 model.add(Activation('softmax'))
 
-optimizer = RMSprop(lr=0.01)
+optimizer = 'adam'
 model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
 print "Finished building model"
