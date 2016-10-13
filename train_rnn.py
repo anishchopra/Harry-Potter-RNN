@@ -3,6 +3,7 @@ from keras.layers import Dense, Activation, Dropout
 from keras.layers import LSTM
 from keras.optimizers import RMSprop
 from keras.utils import np_utils
+from keras.callbacks import ModelCheckpoint
 import numpy as np
 import random
 import sys
