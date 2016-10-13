@@ -22,7 +22,7 @@ random_start = random.randint(0,len(text)-window_size-1)
 random_start = 0
 
 # select a random phrase from the text to use as a seed
-seed_text = text[random_start:random_start+window_size]
+seed_text = text[random_start:random_start+window_size].lower()
 
 print seed_text
 

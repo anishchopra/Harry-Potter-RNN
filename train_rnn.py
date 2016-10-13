@@ -1,31 +1,32 @@
 from keras.models import Sequential
-from keras.layers import Dense, Activation
+from keras.layers import Dense, Activation, Dropout
 from keras.layers import LSTM
 from keras.optimizers import RMSprop
+from keras.utils import np_utils
 import numpy as np
 import random
 import sys
 
 from constants import *
 
-phrases = []
-next_chars = []
+x_data = []
+y_data = []
 
 # generate all the windows in the text
 for i in range(len(text) - window_size):
-    phrases.append(text[i:i+window_size])
-    next_chars.append(text[i+window_size])
+    phrase = text[i:i+window_size]
+    next_char = text[i+window_size]
+
+    x_data.append([char_indices[c] for c in phrase])
+    y_data.append(char_indices[c])
+
+num_phrases = len(x_data)
 
 # create training data
-x = np.zeros((len(phrases), window_size, 1), dtype='bool')
-y = np.zeros((len(phrases), len(chars)), dtype='bool')
+x = np.reshape(x_data, (num_phrases, window_size, 1))
+y = np_utils.to_categorical(y_data)
 
-for i,phrase in enumerate(phrases):
-    for j,char in enumerate(phrase):
-        x[i,j,0] = char_indices[char]
-
-    y[i,char_indices[next_chars[i]]] = 1
-
+# normalize
 x = x / float(len(chars))
 
 print "Finished creating training data"
@@ -34,23 +35,26 @@ print "Building model..."
 # build model
 model = Sequential()
 # by setting stateful=True, the state of the layer will preserved between batches
-model.add(LSTM(128, input_shape=(window_size, 1), stateful=False))
+model.add(LSTM(256, input_shape=(window_size, 1), stateful=False, return_sequences=True))
+model.add(Dropout(0.2))
+model.add(LSTM(256))
+model.add(Dropout(0.2))
 model.add(Dense(len(chars)))
 model.add(Activation('softmax'))
 
 optimizer = 'adam'
 model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
+
+# define the checkpoint
+filepath="hp_rnn-{epoch:02d}-{loss:.4f}.hdf5"
+checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
+callbacks_list = [checkpoint]
+
 print "Finished building model"
 print "Starting training..."
 
-for i in range(300):
-    print "Epoch %d" % (i+1)
-
-    model.fit(x, y, nb_epoch=1, batch_size=batch_size, verbose=2, shuffle=False)
-
-    model.save(model_file)
-    model.reset_states()
+model.fit(x, y, nb_epoch=30, batch_size=batch_size, verbose=2, shuffle=False, callbacks=callbacks_list)
 
 
 
