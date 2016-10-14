@@ -49,19 +49,11 @@ model.add(Activation('softmax'))
 optimizer = 'adam'
 model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
-class EndEpochCallback(callbacks.Callback):
-	def on_epoch_end(self, epoch, logs):
-		os.system('git add *')
-		os.system('git commit -m "adding new models"')
-		os.system('git push origin master')
-		
-push_callback = EndEpochCallback()
-
 
 # define the checkpoint
 filepath = "stateless_charlevel_hp_rnn-{epoch:02d}-{loss:.4f}.hdf5"
 checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
-callbacks_list = [checkpoint, push_callback]
+callbacks_list = [checkpoint]
 
 print "Finished building model"
 print "Starting training..."
