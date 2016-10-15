@@ -20,7 +20,7 @@ for _ in range(10):
 	seed_text = text[random_start:random_start+window_size]
 
 	print seed_text
-	print '\n'*2
+	print '\n'
 
 	seed = [char_indices[c] for c in seed_text]
 
@@ -44,7 +44,7 @@ for _ in range(10):
 	output_text = ' '.join([spell(word) for word in output_text.split()])
 	print output_text
 
-	print '\n'*4
+	print '\n'*2
 
 
 

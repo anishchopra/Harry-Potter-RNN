@@ -6,7 +6,6 @@ from autocorrect import spell
 from constants import *
 
 window_size = 100
-batch_size = 32
 
 # number of characters to generate
 num_chars = 100
@@ -21,7 +20,9 @@ for _ in range(10):
 	seed_text = text[random_start:random_start+window_size]
 
 	print seed_text
-	print '\n'*2
+	print '\n'
+
+	print "PREDICTED TEXT:"
 
 	seed = [char_indices[c] for c in seed_text]
 
@@ -45,7 +46,7 @@ for _ in range(10):
 	output_text = ' '.join([spell(word) for word in output_text.split()])
 	print output_text
 
-	print '\n'*4
+	print '\n'*2
 
 
 
