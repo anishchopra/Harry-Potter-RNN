@@ -4,18 +4,12 @@ import random
 
 from constants import *
 
-window_size = 40
-
-def printSeedValue(seed_value):
-	text = ""
-	for v in seed_value[0]:
-		text += indices_char[int(v[0]*float(len(chars)))]
-	print text
+window_size = 1
 
 # number of words to generate
 num_words = 100
 
-model = load_model('stateless_wordlevel_hp_rnn-01-7.9504.hdf5')
+model = load_model('stateless_wordlevel_hp_rnn-01-6.7316.hdf5')
 
 random_start = random.randint(0,len(text_words)-window_size-1)
 
@@ -24,7 +18,7 @@ seed_text = text_words[random_start:random_start+window_size]
 
 print ' '.join(seed_text)
 
-seed = [word_indices[w] for w in seed_text]
+seed = [word_indices[c] for c in seed_text]
 
 output_text = ""
 
@@ -44,9 +38,6 @@ for _ in range(num_words):
 	seed = seed[1:]
 
 print output_text
-
-with open(output_file, 'w') as f:
-	f.write(output_text)
 
 
 
