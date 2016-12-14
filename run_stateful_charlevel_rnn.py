@@ -10,7 +10,7 @@ window_size = 1
 # number of characters to generate
 num_chars = 100
 
-model = load_model('stateful_charlevel_hp_rnn-01-2.5778.hdf5')
+model = load_model('stateful_charlevel_hp_rnn-04-2.4073.hdf5')
 
 for _ in range(10):
 	random_start = random.randint(0,len(text)-window_size-1)
